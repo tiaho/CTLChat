@@ -110,6 +110,25 @@ def format_context(retrieved_docs: list[dict]) -> str:
     return "\n\n".join(context_parts)
 
 
+def chunk_markdown_by_separator(text: str, separator: str = "##") -> list[str]:
+    """Split markdown text by a separator (e.g., ##).
+
+    Args:
+        text: Markdown text to chunk
+        separator: Separator to split on (default: ##)
+
+    Returns:
+        List of text chunks split by separator
+    """
+    # Split by separator and clean up chunks
+    chunks = text.split(separator)
+
+    # Strip whitespace and filter out empty chunks
+    chunks = [chunk.strip() for chunk in chunks if chunk.strip()]
+
+    return chunks
+
+
 def get_file_extension(file_path: Path) -> str:
     """Get the file extension in lowercase.
 
