@@ -32,3 +32,11 @@ pnpm-debug.log*
 .env.local
 .env.*.local
 backend/chroma_db
+
+# Database files
+backend/*.db
+backend/*.sqlite
+backend/*.sqlite3
+*.db
+*.sqlite
+*.sqlite3

@@ -37,6 +37,9 @@ class Settings(BaseSettings):
     log_level: str = os.getenv("LOG_LEVEL", "INFO")
     log_dir: str = os.getenv("LOG_DIR", "./logs")
 
+    # Database Configuration
+    database_path: str = os.getenv("DATABASE_PATH", "./ctlchat.db")
+
     # Paths
     @property
     def data_dir(self) -> Path:
@@ -52,6 +55,11 @@ class Settings(BaseSettings):
     def logs_path(self) -> Path:
         """Path to logs directory."""
         return Path(__file__).parent.parent / self.log_dir
+
+    @property
+    def db_path(self) -> Path:
+        """Path to SQLite database."""
+        return Path(__file__).parent.parent / self.database_path
 
     class Config:
         env_file = ".env"
