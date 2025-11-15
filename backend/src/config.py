@@ -7,6 +7,7 @@ from dotenv import load_dotenv
 # Load environment variables
 load_dotenv()
 
+
 class Settings(BaseSettings):
     """Application settings loaded from environment variables."""
 

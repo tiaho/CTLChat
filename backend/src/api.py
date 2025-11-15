@@ -1,7 +1,7 @@
 """FastAPI server for CTLChat RAG application."""
 from typing import List, Optional
 from contextlib import asynccontextmanager
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException, UploadFile, File, Form
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import StreamingResponse
 from pydantic import BaseModel
@@ -9,6 +9,7 @@ from loguru import logger
 from config import settings
 from utils import setup_logging
 from rag_engine import RAGEngine
+from file_handler import process_file_upload
 
 
 # Request/Response Models
@@ -37,6 +38,14 @@ class StatsResponse(BaseModel):
     total_documents: int
     collection_name: str
     embedding_model: str
+
+
+class UploadResponse(BaseModel):
+    """File upload response model."""
+    message: str
+    filename: str
+    chunks_added: int
+    total_documents: int
 
 
 # Global RAG engine instance
@@ -205,6 +214,55 @@ async def chat_stream(request: ChatRequest):
 
     except Exception as e:
         logger.error(f"Error processing streaming chat request: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@app.post("/upload", response_model=UploadResponse)
+async def upload_file(
+    file: UploadFile = File(...),
+    user_id: Optional[str] = Form(None),
+    org_id: Optional[str] = Form(None),
+    visibility: Optional[str] = Form("personal")
+):
+    """Upload and process a document file.
+
+    Accepts document files, processes them, creates embeddings,
+    and adds them to the vector store.
+
+    Args:
+        file: Uploaded file (.txt, .pdf, .docx, .md)
+        user_id: User ID (for future multi-user support)
+        org_id: Organization ID (for future multi-org support)
+        visibility: Visibility setting ("personal" or "org-wide")
+
+    Returns:
+        UploadResponse with processing results
+    """
+    if rag_engine is None:
+        raise HTTPException(status_code=503, detail="RAG Engine not initialized")
+
+    try:
+        # Process the upload using the file handler
+        result = process_file_upload(
+            vector_store=rag_engine.vector_store,
+            file=file,
+            user_id=user_id,
+            org_id=org_id,
+            visibility=visibility
+        )
+
+        return UploadResponse(
+            message="File uploaded and processed successfully",
+            filename=result["filename"],
+            chunks_added=result["chunks_added"],
+            total_documents=result["total_documents"]
+        )
+
+    except HTTPException:
+        # Re-raise HTTP exceptions from the handler
+        raise
+    except Exception as e:
+        logger.error(f"Error in upload endpoint: {e}")
         raise HTTPException(status_code=500, detail=str(e))
 
 
