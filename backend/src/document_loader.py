@@ -6,15 +6,20 @@ import docx
 import markdown
 from loguru import logger
 from config import settings
-from utils import clean_text, chunk_text, get_file_extension
+from utils import clean_text, chunk_text, chunk_markdown_by_separator, get_file_extension
 
 
 class DocumentLoader:
     """Load and process documents from various file formats."""
 
-    def __init__(self):
-        """Initialize the document loader."""
+    def __init__(self, use_markdown_separator: bool = False):
+        """Initialize the document loader.
+
+        Args:
+            use_markdown_separator: If True, split markdown files by ## separator
+        """
         self.supported_extensions = {'.txt', '.pdf', '.docx', '.md'}
+        self.use_markdown_separator = use_markdown_separator
 
     def load_file(self, file_path: Path) -> str:
         """Load content from a single file.
@@ -106,12 +111,17 @@ class DocumentLoader:
                 # Clean the text
                 content = clean_text(content)
 
-                # Chunk the document
-                chunks = chunk_text(
-                    content,
-                    chunk_size=settings.chunk_size,
-                    overlap=settings.chunk_overlap
-                )
+                # Chunk the document based on file type and settings
+                if extension == 'md' and self.use_markdown_separator:
+                    # For markdown with markdown_separator flag, split by ## separator
+                    chunks = chunk_markdown_by_separator(content)
+                else:
+                    # For other files, use character-based chunking
+                    chunks = chunk_text(
+                        content,
+                        chunk_size=settings.chunk_size,
+                        overlap=settings.chunk_overlap
+                    )
 
                 # Create document entries with metadata
                 for i, chunk in enumerate(chunks):
@@ -137,14 +147,15 @@ class DocumentLoader:
 
 
 # Convenience function
-def load_documents(directory: Path = None) -> List[Dict[str, any]]:
+def load_documents(directory: Path = None, use_markdown_separator: bool = False) -> List[Dict[str, any]]:
     """Load all documents from the specified directory.
 
     Args:
         directory: Directory to load from (defaults to curated_data)
+        use_markdown_separator: If True, split markdown files by ## separator
 
     Returns:
         List of document chunks with metadata
     """
-    loader = DocumentLoader()
+    loader = DocumentLoader(use_markdown_separator=use_markdown_separator)
     return loader.load_directory(directory)

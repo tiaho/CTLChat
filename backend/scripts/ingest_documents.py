@@ -1,5 +1,6 @@
 """Script to ingest documents into the vector database."""
 import sys
+import argparse
 from pathlib import Path
 
 # Add src directory to path
@@ -12,7 +13,7 @@ from document_loader import load_documents
 from vector_store import VectorStore
 
 
-def main():
+def main(use_markdown_separator: bool = False):
     """Main ingestion function."""
     # Setup logging
     setup_logging()
@@ -38,7 +39,9 @@ def main():
 
     # Load documents
     logger.info("Loading and processing documents...")
-    documents = load_documents()
+    if use_markdown_separator:
+        logger.info("Using header (##) separator for markdown files")
+    documents = load_documents(use_markdown_separator=use_markdown_separator)
 
     if not documents:
         logger.warning("No documents were loaded successfully")
@@ -76,8 +79,19 @@ def main():
 
 
 if __name__ == "__main__":
+    parser = argparse.ArgumentParser(
+        description="Ingest documents into the CTLChat vector database"
+    )
+    parser.add_argument(
+        "--markdown-separator",
+        action="store_true",
+        help="Split markdown files by headers (##) instead of character-based chunking"
+    )
+
+    args = parser.parse_args()
+
     try:
-        main()
+        main(use_markdown_separator=args.markdown_separator)
     except KeyboardInterrupt:
         logger.info("\nIngestion cancelled by user")
         sys.exit(0)

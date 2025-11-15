@@ -105,15 +105,24 @@ Place your documents in the `data/curated_data/` directory. Supported formats:
 
 Run the ingestion script to process and index your documents:
 
+**Basic ingestion (default chunking):**
 ```bash
 # Make sure virtual environment is activated first
 source venv/bin/activate
 python scripts/ingest_documents.py
 ```
 
+**Markdown files with header separators:**
+```bash
+# Split markdown files by ## headers instead of character-based chunking
+python scripts/ingest_documents.py --markdown-separator
+```
+
 This will:
 - Load all documents from `data/curated_data/`
-- Chunk them into manageable pieces
+- Chunk them into manageable pieces:
+  - **Default**: Character-based chunking with overlap (all file types)
+  - **With `--markdown-separator`**: Split markdown files by `##` headers, other files use default chunking
 - Generate embeddings using sentence-transformers
 - Store them in ChromaDB
 
@@ -227,8 +236,8 @@ All configuration is managed through environment variables in `.env`:
 | `MODEL_NAME` | Claude model to use | claude-3-5-sonnet-20241022 |
 | `MAX_TOKENS` | Maximum response tokens | 4096 |
 | `TEMPERATURE` | Response randomness (0-1) | 0.7 |
-| `CHUNK_SIZE` | Document chunk size | 1000 |
-| `CHUNK_OVERLAP` | Overlap between chunks | 200 |
+| `CHUNK_SIZE` | Document chunk size (default chunking only) | 1000 |
+| `CHUNK_OVERLAP` | Overlap between chunks (default chunking only) | 200 |
 | `TOP_K_RESULTS` | Number of results to retrieve | 5 |
 | `EMBEDDING_MODEL` | Sentence transformer model | all-MiniLM-L6-v2 |
 | `API_PORT` | API server port | 8000 |
@@ -242,6 +251,25 @@ To add support for new file formats, edit `document_loader.py`:
 1. Add the extension to `supported_extensions`
 2. Create a new `_load_<format>()` method
 3. Update the `load_file()` method
+
+### Customizing Document Chunking
+
+The system supports multiple chunking strategies:
+
+**Default chunking** (`utils.py:chunk_text`):
+- Character-based with configurable size and overlap
+- Attempts to break at sentence boundaries
+- Used for all file types by default
+
+**Markdown separator chunking** (`utils.py:chunk_markdown_by_separator`):
+- Splits markdown files by `##` headers
+- Enabled with `--markdown-separator` flag during ingestion
+- Preserves logical document sections
+
+To add custom chunking strategies:
+1. Add new chunking function to `utils.py`
+2. Update `document_loader.py` to conditionally use it
+3. Add command-line flag to `ingest_documents.py` if needed
 
 ### Customizing Retrieval
 
