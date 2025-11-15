@@ -124,26 +124,31 @@ Place your documents anywhere in the `data/` directory. The system will recursiv
 
 Run the ingestion script to process and index your documents:
 
-**Basic ingestion (default chunking):**
+**Basic ingestion (processes both curated_data and program_logs):**
 ```bash
 # Make sure virtual environment is activated first
 source venv/bin/activate
 python scripts/ingest_documents.py
 ```
 
-**Markdown files with header separators:**
+This processes:
+- `data/curated_data/` - Markdown files split by ## headers
+- `data/program_logs/` - Character-based chunking
+
+**Process specific directories only:**
 ```bash
-# Split markdown files by ## headers instead of character-based chunking
-python scripts/ingest_documents.py --markdown-separator
+# Only curated data (markdown files split by ## headers)
+python scripts/ingest_documents.py --curated-data
+
+# Only program logs (character-based chunking)
+python scripts/ingest_documents.py --program-logs
 ```
 
-This will:
-- Load all documents from `data/` directory (recursively processes all subdirectories)
-- Chunk them into manageable pieces:
-  - **Default**: Character-based chunking with overlap (all file types)
-  - **With `--markdown-separator`**: Split markdown files by `##` headers, other files use default chunking
+**Chunking behavior:**
+- `data/curated_data/` - Markdown files split by `##` headers
+- `data/program_logs/` - Character-based chunking with overlap
 - Generate embeddings using sentence-transformers
-- Store them in ChromaDB
+- Store in ChromaDB
 
 ### 6. Start the API Server
 
