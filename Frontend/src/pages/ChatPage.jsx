@@ -1,10 +1,10 @@
 import React, { useState, useEffect, useRef } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { apiClient } from '../api/client'
 import { Button } from '../components/ui/button'
 import { Input } from '../components/ui/input'
 import { Badge } from '../components/ui/badge'
 import { Card } from '../components/ui/card'
-import { Chart } from '../components/Chart'
 import ReactMarkdown from 'react-markdown'
 import remarkGfm from 'remark-gfm'
 import {
@@ -14,6 +14,7 @@ import {
 } from 'lucide-react'
 
 export default function ChatPage({ user, org, onLogout }) {
+  const navigate = useNavigate()
   const [conversations, setConversations] = useState([])
   const [currentConversation, setCurrentConversation] = useState(null)
   const [messages, setMessages] = useState([])
@@ -80,7 +81,10 @@ export default function ChatPage({ user, org, onLogout }) {
   const handleNewConversation = async () => {
     try {
       setLoading(true)
-      const response = await apiClient.post('/conversations', { user_id: user.id })
+      const response = await apiClient.post('/conversations', {
+        user_id: user.id,
+        org_id: user.org_id
+      })
       const newConversation = {
         conversation_id: response.data.conversation_id,
         title: 'New Conversation',
@@ -293,7 +297,10 @@ export default function ChatPage({ user, org, onLogout }) {
             variant="ghost"
             size="sm"
             className="w-full justify-start text-destructive hover:text-destructive"
-            onClick={onLogout}
+            onClick={() => {
+              onLogout()
+              navigate('/login')
+            }}
           >
             <LogOut className="mr-2 h-4 w-4" />
             Sign Out
@@ -314,9 +321,9 @@ export default function ChatPage({ user, org, onLogout }) {
           <div className="flex-1 flex items-center justify-center text-center p-8">
             <div className="max-w-md">
               <MessageSquare className="h-16 w-16 mx-auto mb-4 text-muted-foreground" />
-              <h2 className="text-2xl font-semibold mb-2">Welcome to OrgRAG</h2>
+              <h2 className="text-2xl font-semibold mb-2">Welcome to CTLChat</h2>
               <p className="text-muted-foreground mb-4">
-                Create a new conversation or select an existing one to start chatting with your organization's knowledge base.
+                Create a new conversation or select an existing one to start creating a personalized program.
               </p>
               <Button onClick={handleNewConversation}>
                 <Plus className="mr-2 h-4 w-4" />
@@ -350,32 +357,9 @@ export default function ChatPage({ user, org, onLogout }) {
                           {msg.content}
                         </div>
                       ) : (
-                        <div className="prose prose-sm max-w-none dark:prose-invert prose-headings:font-semibold prose-h1:text-xl prose-h2:text-lg prose-h3:text-base prose-p:leading-relaxed prose-ul:my-2 prose-ol:my-2 prose-li:my-0.5">
-                          {msg.chart && <Chart config={msg.chart} />}
-                          <ReactMarkdown
-                            remarkPlugins={[remarkGfm]}
-                            components={{
-                              code({node, inline, className, children, ...props}) {
-                                return inline ? (
-                                  <code className="bg-slate-200 dark:bg-slate-800 text-slate-900 dark:text-slate-100 px-1.5 py-0.5 rounded text-sm font-mono border border-slate-300 dark:border-slate-700" {...props}>
-                                    {children}
-                                  </code>
-                                ) : (
-                                  <code className="font-mono text-sm" {...props}>
-                                    {children}
-                                  </code>
-                                )
-                              },
-                              pre({children}) {
-                                return (
-                                  <pre className="bg-slate-100 dark:bg-slate-900 text-slate-900 dark:text-slate-100 p-4 rounded-lg border border-slate-300 dark:border-slate-700 overflow-x-auto my-4">
-                                    {children}
-                                  </pre>
-                                )
-                              }
-                            }}
-                          >
-                            {msg.content?.replace('[CHART_PLACEHOLDER]', '')}
+                        <div className="prose prose-sm max-w-none dark:prose-invert">
+                          <ReactMarkdown remarkPlugins={[remarkGfm]}>
+                            {msg.content}
                           </ReactMarkdown>
                         </div>
                       )}
