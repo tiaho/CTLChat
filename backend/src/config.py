@@ -18,7 +18,7 @@ class Settings(BaseSettings):
     temperature: float = float(os.getenv("TEMPERATURE", "0.7"))
 
     # ChromaDB Configuration
-    chroma_db_path: str = os.getenv("CHROMA_DB_PATH", "./chroma_db")
+    chroma_db_path: str = os.getenv("CHROMA_DB_PATH", "./database/chroma_db")
     collection_name: str = os.getenv("COLLECTION_NAME", "ctl_chat_docs")
 
     # Document Processing Configuration
@@ -38,7 +38,7 @@ class Settings(BaseSettings):
     log_dir: str = os.getenv("LOG_DIR", "./logs")
 
     # Database Configuration
-    database_path: str = os.getenv("DATABASE_PATH", "./ctlchat.db")
+    database_path: str = os.getenv("DATABASE_PATH", "./database/ctlchat.db")
 
     # Paths
     @property

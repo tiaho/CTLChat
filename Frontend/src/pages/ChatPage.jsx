@@ -10,7 +10,7 @@ import remarkGfm from 'remark-gfm'
 import {
   MessageSquare, Plus, Send, Upload, LogOut,
   Building2, User, Loader2, AlertCircle,
-  FileText, Globe2, Settings
+  FileText, Globe2, Settings, Trash2
 } from 'lucide-react'
 
 export default function ChatPage({ user, org, onLogout }) {
@@ -96,6 +96,34 @@ export default function ChatPage({ user, org, onLogout }) {
       setError(null)
     } catch (err) {
       setError('Failed to create conversation')
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  const handleDeleteConversation = async (conversationId, e) => {
+    e.stopPropagation() // Prevent selecting the conversation when deleting
+
+    if (!confirm('Are you sure you want to delete this conversation?')) {
+      return
+    }
+
+    try {
+      setLoading(true)
+      await apiClient.deleteConversation(conversationId)
+
+      // Remove conversation from list
+      setConversations(conversations.filter(conv => conv.conversation_id !== conversationId))
+
+      // If deleted conversation was selected, clear selection
+      if (currentConversation?.conversation_id === conversationId) {
+        setCurrentConversation(null)
+        setMessages([])
+      }
+
+      setError(null)
+    } catch (err) {
+      setError('Failed to delete conversation')
     } finally {
       setLoading(false)
     }
@@ -234,27 +262,39 @@ export default function ChatPage({ user, org, onLogout }) {
             </div>
           ) : (
             conversations.map((conv) => (
-              <button
+              <div
                 key={conv.conversation_id}
-                onClick={() => setCurrentConversation(conv)}
-                className={`w-full text-left p-3 rounded-lg mb-1 transition-colors ${
-                  currentConversation?.conversation_id === conv.conversation_id
-                    ? 'bg-primary text-primary-foreground'
-                    : 'hover:bg-accent'
-                }`}
+                className="relative group"
               >
-                <div className="flex items-start gap-2">
-                  <MessageSquare className="h-4 w-4 mt-0.5 flex-shrink-0" />
-                  <div className="flex-1 min-w-0">
-                    <div className="text-sm font-medium truncate">
-                      {conv.title || 'New Conversation'}
-                    </div>
-                    <div className="text-xs opacity-70">
-                      {new Date(conv.created_at).toLocaleDateString()}
+                <button
+                  onClick={() => setCurrentConversation(conv)}
+                  className={`w-full text-left p-3 rounded-lg mb-1 transition-colors ${
+                    currentConversation?.conversation_id === conv.conversation_id
+                      ? 'bg-primary text-primary-foreground'
+                      : 'hover:bg-accent'
+                  }`}
+                >
+                  <div className="flex items-start gap-2">
+                    <MessageSquare className="h-4 w-4 mt-0.5 flex-shrink-0" />
+                    <div className="flex-1 min-w-0 pr-6">
+                      <div className="text-sm font-medium truncate">
+                        {conv.title || 'New Conversation'}
+                      </div>
+                      <div className="text-xs opacity-70">
+                        {new Date(conv.created_at).toLocaleDateString()}
+                      </div>
                     </div>
                   </div>
-                </div>
-              </button>
+                </button>
+                <button
+                  onClick={(e) => handleDeleteConversation(conv.conversation_id, e)}
+                  className="absolute right-2 top-1/2 -translate-y-1/2 p-1.5 rounded opacity-0 group-hover:opacity-100 transition-opacity hover:bg-destructive/10 text-destructive"
+                  title="Delete conversation"
+                  disabled={loading}
+                >
+                  <Trash2 className="h-3.5 w-3.5" />
+                </button>
+              </div>
             ))
           )}
         </div>

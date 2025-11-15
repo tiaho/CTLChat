@@ -411,6 +411,37 @@ async def get_conversation(conversation_id: str):
         raise HTTPException(status_code=500, detail=str(e))
 
 
+@app.delete("/conversations/{conversation_id}")
+async def delete_conversation(conversation_id: str):
+    """Delete a conversation and all its messages.
+
+    Args:
+        conversation_id: Conversation ID
+
+    Returns:
+        Success message
+    """
+    if db is None:
+        raise HTTPException(status_code=503, detail="Database not initialized")
+
+    try:
+        # Verify conversation exists
+        conversation = db.get_conversation(conversation_id)
+        if not conversation:
+            raise HTTPException(status_code=404, detail="Conversation not found")
+
+        # Delete conversation (messages are deleted automatically via CASCADE)
+        db.delete_conversation(conversation_id)
+
+        return {"message": "Conversation deleted successfully", "conversation_id": conversation_id}
+
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Error deleting conversation: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
 @app.post("/conversations/{conversation_id}/messages")
 async def send_message(conversation_id: str, request: MessageRequest):
     """Send a message in a conversation and get AI response.

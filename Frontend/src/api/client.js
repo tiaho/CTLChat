@@ -87,6 +87,9 @@ export const apiClient = {
 
     return api.post("/upload", formData);
   },
+
+  // Delete conversation endpoint
+  deleteConversation: (conversationId) => api.delete(`/conversations/${conversationId}`),
 };
 
 export default api;

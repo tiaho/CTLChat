@@ -22,7 +22,7 @@ class Database:
 
     def _init_db(self):
         """Initialize database with schema."""
-        schema_path = Path(__file__).parent.parent / "schema.sql"
+        schema_path = Path(__file__).parent.parent / "database" / "schema.sql"
 
         if not schema_path.exists():
             logger.warning(f"Schema file not found at {schema_path}")
