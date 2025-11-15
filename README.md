@@ -4,14 +4,14 @@ CTLChat is a RAG (Retrieval-Augmented Generation) chatbot application that helps
 
 ## Features
 
-- 🤖 **AI-Powered Chat** - Get intelligent responses using Claude AI
-- 📚 **RAG Mode** - Query your uploaded documents and knowledge base
-- 🌐 **General Knowledge Mode** - Ask questions using Claude's general knowledge
-- 🔍 **Web Search Mode** - Search the web for current information (coming soon)
-- 💬 **Conversation History** - All conversations are saved and can be resumed
-- 📁 **Document Upload** - Upload documents (PDF, DOCX, TXT, MD, CSV, XLSX) to your knowledge base
-- 🏢 **Multi-Organization** - Support for multiple organizations with shared and personal documents
-- 👥 **User Roles** - Admin and user roles with different permissions
+- **AI-Powered Chat** - Get intelligent responses using Claude AI
+- **RAG Mode** - Query your uploaded documents and knowledge base
+- **General Knowledge Mode** - Ask questions using Claude's general knowledge
+- **Web Search Mode** - Search the web for current information (coming soon)
+- **Conversation History** - All conversations are saved and can be resumed
+- **Document Upload** - Upload documents (PDF, DOCX, TXT, MD, CSV, XLSX) to your knowledge base
+- **Multi-Organization** - Support for multiple organizations with shared and personal documents
+- **User Roles** - Admin and user roles with different permissions
 
 ## Prerequisites
 
