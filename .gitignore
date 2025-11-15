@@ -5,3 +5,13 @@ backend/.env
 # But allow example files
 !.env.example
 !backend/.env.example
+
+# Virtual environments
+venv/
+env/
+ENV/
+backend/venv/
+backend/env/
+.Python
+*.pyc
+__pycache__/

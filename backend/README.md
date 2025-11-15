@@ -27,28 +27,70 @@ backend/
 │   ├── curated_data/       # Place your documents here
 │   └── program_logs/       # Application logs
 ├── chroma_db/              # Vector database storage
+├── venv/                   # Virtual environment (not in git)
 ├── requirements.txt        # Python dependencies
-└── .env                    # Environment variables
+├── setup_venv.sh           # Virtual environment setup script
+├── .env                    # Environment variables (not in git)
+└── .env.example            # Environment template
 ```
 
 ## Setup
 
-### 1. Install Dependencies
+### 1. Set Up Virtual Environment
+
+It's recommended to use a Python virtual environment to isolate dependencies:
+
+**Option A: Automated Setup (recommended)**
 
 ```bash
 cd backend
+./setup_venv.sh
+```
+
+This script will:
+- Create a virtual environment in `backend/venv/`
+- Upgrade pip
+- Install all dependencies from `requirements.txt`
+
+**Option B: Manual Setup**
+
+```bash
+cd backend
+python3 -m venv venv
+source venv/bin/activate
+pip install --upgrade pip
 pip install -r requirements.txt
 ```
 
+**Activate the virtual environment:**
+```bash
+source venv/bin/activate
+```
+
+You'll know the virtual environment is active when you see `(venv)` in your terminal prompt.
+
+**Deactivate when done:**
+```bash
+deactivate
+```
+
+> **Note:** Make sure to activate the virtual environment before running any Python scripts or starting the server.
+
 ### 2. Configure Environment Variables
 
-Edit the `.env` file and add your Anthropic API key:
+Copy the example environment file and add your Anthropic API key:
+
+```bash
+cp .env.example .env
+```
+
+Then edit `.env` and add your actual API key:
 
 ```bash
 ANTHROPIC_API_KEY=your_actual_api_key_here
 ```
 
-Other settings can be adjusted as needed (see `.env` for all options).
+Other settings can be adjusted as needed (see `.env.example` for all available options).
 
 ### 3. Add Documents
 
@@ -63,6 +105,8 @@ Place your documents in the `data/curated_data/` directory. Supported formats:
 Run the ingestion script to process and index your documents:
 
 ```bash
+# Make sure virtual environment is activated first
+source venv/bin/activate
 python scripts/ingest_documents.py
 ```
 
@@ -75,6 +119,8 @@ This will:
 ### 5. Start the API Server
 
 ```bash
+# Make sure virtual environment is activated first
+source venv/bin/activate
 cd src
 python api.py
 ```
@@ -82,6 +128,8 @@ python api.py
 Or using uvicorn directly:
 
 ```bash
+# Make sure virtual environment is activated first
+source venv/bin/activate
 cd src
 uvicorn api:app --reload --host 0.0.0.0 --port 8000
 ```
