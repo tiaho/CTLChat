@@ -27,8 +27,8 @@ backend/
 ├── data/
 │   ├── curated_data/       # Place your documents here
 │   └── program_logs/       # Logs from previous programs
-├── logs/                   # Application logs (not in git)
 ├── chroma_db/              # Vector database storage
+├── logs/                   # Application logs (not in git)
 ├── venv/                   # Virtual environment (not in git)
 ├── requirements.txt        # Python dependencies
 ├── setup_venv.sh           # Virtual environment setup script
@@ -119,6 +119,8 @@ Place your documents anywhere in the `data/` directory. The system will recursiv
 - `.md` - Markdown files
 
 ### 5. Ingest Documents
+
+**Note:** The vector database (`chroma_db/`) is included in this repository with pre-built embeddings. You only need to run ingestion if you add new documents or want to rebuild the database.
 
 Run the ingestion script to process and index your documents:
 
