@@ -11,6 +11,8 @@ from utils import setup_logging
 from rag_engine import RAGEngine
 from file_handler import process_file_upload
 from database import Database
+from query_preprocessing import preprocess_query, build_search_query
+from conversation_summary import get_conversation_context_string
 import json
 
 
@@ -436,16 +438,23 @@ async def send_message(conversation_id: str, request: MessageRequest):
             content=request.question
         )
 
-        # Get conversation history
-        messages = db.get_conversation_messages(conversation_id)
+        # Get conversation history (excluding the message we just added)
+        all_messages = db.get_conversation_messages(conversation_id)
+        previous_messages = all_messages[:-1]  # Exclude current user message
+
         conversation_history = [
             {"role": msg["role"], "content": msg["content"]}
-            for msg in messages[:-1]  # Exclude the message we just added
+            for msg in previous_messages
         ]
+
+        # Get organization name for context
+        org = db.get_organization(conversation["org_id"])
+        org_name = org["org_name"] if org else None
 
         # Generate response based on mode
         response_text = ""
         sources_used = []
+        preprocessing_result = None
 
         if request.mode == "general_knowledge":
             # Use Claude without RAG
@@ -466,10 +475,25 @@ async def send_message(conversation_id: str, request: MessageRequest):
             response_text = "Web search mode is not yet implemented."
 
         else:  # RAG mode
-            # Get relevant documents
-            retrieved_docs = rag_engine.retrieve(request.question, top_k=5)
+            # Build conversation context with summarization
+            context_string = get_conversation_context_string(previous_messages, org_name)
 
-            # Generate response with RAG
+            # Preprocess query with conversation context
+            preprocessing_result = preprocess_query(
+                query=request.question,
+                org_name=org_name,
+                conversation_context=context_string if context_string else None
+            )
+
+            # Build enhanced search query
+            search_query = build_search_query(preprocessing_result)
+
+            logger.info(f"Enhanced search query: {search_query}")
+
+            # Get relevant documents using enhanced query
+            retrieved_docs = rag_engine.retrieve(search_query, top_k=5)
+
+            # Generate response with RAG using conversation context
             response_text = rag_engine.query(
                 query=request.question,
                 conversation_history=conversation_history,
@@ -482,6 +506,11 @@ async def send_message(conversation_id: str, request: MessageRequest):
                 for doc in retrieved_docs
             ]))
 
+            # Log query preprocessing results
+            if preprocessing_result:
+                logger.info(f"Query intent: {preprocessing_result['intent_type']}")
+                logger.info(f"Related terms: {', '.join(preprocessing_result['related_terms'][:5])}")
+
         # Save assistant response
         db.add_message(
             conversation_id=conversation_id,
@@ -490,7 +519,7 @@ async def send_message(conversation_id: str, request: MessageRequest):
         )
 
         # Update conversation title if this is the first message
-        if len(messages) == 1:  # Only user message exists
+        if len(all_messages) == 1:  # Only user message exists
             title = request.question[:50] + "..." if len(request.question) > 50 else request.question
             db.update_conversation_title(conversation_id, title)
 
