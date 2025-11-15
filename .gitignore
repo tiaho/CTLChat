@@ -29,3 +29,9 @@ backend/venv/
 logs/
 backend/logs/
 *.log
+
+# Database files
+*.db
+*.sqlite3
+backend/database/*.db
+backend/database/chroma_db/
