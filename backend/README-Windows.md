@@ -15,25 +15,25 @@ A Retrieval-Augmented Generation (RAG) chatbot backend built with FastAPI, Chrom
 ```
 backend/
 ├── src/
-│   ├── config.py           # Configuration management
-│   ├── utils.py            # Utility functions
-│   ├── document_loader.py  # Document processing
-│   ├── vector_store.py     # ChromaDB operations
-│   ├── rag_engine.py       # RAG core logic
-│   └── api.py              # FastAPI server
+│   ├── config.py            # Configuration management
+│   ├── utils.py             # Utility functions
+│   ├── document_loader.py   # Document processing
+│   ├── vector_store.py      # ChromaDB operations
+│   ├── rag_engine.py        # RAG core logic
+│   └── api.py               # FastAPI server
 ├── scripts/
-│   └── ingest_documents.py # Document ingestion script
+│   └── ingest_documents.py  # Document ingestion script
 ├── data/
-│   ├── curated_data/       # Place your documents here
-│   └── program_logs/       # Logs from previous programs
-├── logs/                   # Application logs (not in git)
-├── chroma_db/              # Vector database storage
-├── venv/                   # Virtual environment (not in git)
-├── requirements.txt        # Python dependencies
-├── setup_venv.ps1          # Virtual environment setup script - powershell
-├── setup_venv.sh           # Virtual environment setup script - bash
-├── .env                    # Environment variables (not in git)
-└── .env.example            # Environment template
+│   ├── curated_data/        # Place your documents here
+│   └── program_logs/        # Logs from previous programs
+├── logs/                    # Application logs (not in git)
+├── chroma_db/               # Vector database storage
+├── venv/                    # Virtual environment (not in git)
+├── requirements.txt         # Python dependencies
+├── setup_venv.ps1           # Virtual environment setup script - powershell
+├── setup_venv.sh            # Virtual environment setup script - bash
+├── .env                     # Environment variables (not in git)
+└── .env.example             # Environment template
 ```
 
 ## Setup

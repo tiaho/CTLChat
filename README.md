@@ -36,31 +36,31 @@ CTLChat is a RAG (Retrieval-Augmented Generation) chatbot application that helps
 
 ```
 CTLChat/
-├── backend/                  # Python FastAPI backend
-│   ├── src/                 # Source code
-│   │   ├── api.py          # Main API routes
-│   │   ├── config.py       # Configuration management
-│   │   ├── database.py     # Database operations
-│   │   ├── rag_engine.py   # RAG implementation
-│   │   ├── vector_store.py # ChromaDB operations
-│   │   ├── document_loader.py  # Document processing
-│   │   └── utils.py        # Utility functions
-│   ├── data/               # Document storage
-│   │   ├── curated_data/   # Markdown files (split by ## headers)
-│   │   └── program_logs/   # Program logs (character-based chunking)
-│   ├── chroma_db/          # Pre-built vector database (included in git)
-│   ├── logs/               # Application logs (created on first run)
-│   ├── venv/               # Virtual environment (created during setup)
-│   ├── scripts/            # Utility scripts
-│   │   ├── init_database.py    # Database initialization
-│   │   └── ingest_documents.py # Document ingestion (optional)
-│   ├── requirements.txt    # Python dependencies
-│   ├── setup_venv.sh       # Automated virtual environment setup
-│   ├── .env.example        # Environment template
-│   └── schema.sql          # Database schema
-├── Frontend/               # React frontend
-│   └── src/               # Source code
-└── README.md              # This file
+├── backend/                     # Python FastAPI backend
+│   ├── src/                     # Source code
+│   │   ├── api.py               # Main API routes
+│   │   ├── config.py            # Configuration management
+│   │   ├── database.py          # Database operations
+│   │   ├── rag_engine.py        # RAG implementation
+│   │   ├── vector_store.py      # ChromaDB operations
+│   │   ├── document_loader.py   # Document processing
+│   │   └── utils.py             # Utility functions
+│   ├── data/                    # Document storage
+│   │   ├── curated_data/        # Markdown files (split by ## headers)
+│   │   └── program_logs/        # Program logs (character-based chunking)
+│   ├── chroma_db/               # Pre-built vector database (included in git)
+│   ├── logs/                    # Application logs (created on first run)
+│   ├── venv/                    # Virtual environment (created during setup)
+│   ├── scripts/                 # Utility scripts
+│   │   ├── init_database.py     # Database initialization
+│   │   └── ingest_documents.py  # Document ingestion (optional)
+│   ├── requirements.txt         # Python dependencies
+│   ├── setup_venv.sh            # Automated virtual environment setup
+│   ├── .env.example             # Environment template
+│   └── schema.sql               # Database schema
+├── Frontend/                    # React frontend
+│   └── src/                     # Source code
+└── README.md                    # This file
 ```
 
 ## Quick Start
