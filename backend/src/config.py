@@ -34,7 +34,7 @@ class Settings(BaseSettings):
 
     # Logging
     log_level: str = os.getenv("LOG_LEVEL", "INFO")
-    log_dir: str = os.getenv("LOG_DIR", "./data/program_logs")
+    log_dir: str = os.getenv("LOG_DIR", "./logs")
 
     # Paths
     @property
