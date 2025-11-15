@@ -257,7 +257,7 @@ All configuration is managed through environment variables in `.env`:
 | Variable | Description | Default |
 |----------|-------------|---------|
 | `ANTHROPIC_API_KEY` | Your Anthropic API key | Required |
-| `MODEL_NAME` | Claude model to use | claude-3-5-sonnet-20241022 |
+| `MODEL_NAME` | Claude model to use | claude-haiku-4-5-20251001 |
 | `MAX_TOKENS` | Maximum response tokens | 4096 |
 | `TEMPERATURE` | Response randomness (0-1) | 0.7 |
 | `CHUNK_SIZE` | Document chunk size (default chunking only) | 1000 |
