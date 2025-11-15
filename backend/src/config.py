@@ -40,8 +40,8 @@ class Settings(BaseSettings):
     # Paths
     @property
     def data_dir(self) -> Path:
-        """Path to curated data directory."""
-        return Path(__file__).parent.parent / "data" / "curated_data"
+        """Path to main data directory (processes all subdirectories recursively)."""
+        return Path(__file__).parent.parent / "data"
 
     @property
     def chroma_path(self) -> Path:
