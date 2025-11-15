@@ -12,7 +12,7 @@ class Settings(BaseSettings):
 
     # Anthropic API Configuration
     anthropic_api_key: str = os.getenv("ANTHROPIC_API_KEY", "")
-    model_name: str = os.getenv("MODEL_NAME", "claude-3-5-sonnet-20241022")
+    model_name: str = os.getenv("MODEL_NAME", "claude-haiku-4-5-20251001")
     max_tokens: int = int(os.getenv("MAX_TOKENS", "4096"))
     temperature: float = float(os.getenv("TEMPERATURE", "0.7"))
 
