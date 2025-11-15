@@ -1,1 +1,7 @@
+# Environment variables with secrets
 .env
+backend/.env
+
+# But allow example files
+!.env.example
+!backend/.env.example
