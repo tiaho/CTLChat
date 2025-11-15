@@ -5,6 +5,7 @@ A Retrieval-Augmented Generation (RAG) chatbot backend built with FastAPI, Chrom
 ## Features
 
 - **Document Processing**: Supports TXT, PDF, DOCX, and Markdown files
+- **Scanned PDF Support**: Automatic OCR using Claude's vision API for scanned documents
 - **Vector Search**: Uses ChromaDB for efficient semantic search
 - **Claude Integration**: Powered by Anthropic's Claude for response generation
 - **REST API**: FastAPI server with streaming support
@@ -37,7 +38,23 @@ backend/
 
 ## Setup
 
-### 1. Set Up Virtual Environment
+### 1. Install System Dependencies
+
+**Python version:** Requires Python 3.11, 3.12, or 3.13 (not compatible with 3.14+)
+
+For scanned PDF support (OCR), install poppler:
+
+**macOS:**
+```bash
+brew install poppler
+```
+
+**Linux:**
+```bash
+sudo apt-get install poppler-utils
+```
+
+### 2. Set Up Virtual Environment
 
 It's recommended to use a Python virtual environment to isolate dependencies:
 
@@ -77,7 +94,7 @@ deactivate
 
 > **Note:** Make sure to activate the virtual environment before running any Python scripts or starting the server.
 
-### 2. Configure Environment Variables
+### 3. Configure Environment Variables
 
 Copy the example environment file and add your Anthropic API key:
 
@@ -93,15 +110,15 @@ ANTHROPIC_API_KEY=your_actual_api_key_here
 
 Other settings can be adjusted as needed (see `.env.example` for all available options).
 
-### 3. Add Documents
+### 4. Add Documents
 
-Place your documents in the `data/curated_data/` directory. Supported formats:
+Place your documents anywhere in the `data/` directory. The system will recursively process all subdirectories. Supported formats:
 - `.txt` - Plain text files
-- `.pdf` - PDF documents
+- `.pdf` - PDF documents (including scanned PDFs with automatic Claude vision OCR)
 - `.docx` - Word documents
 - `.md` - Markdown files
 
-### 4. Ingest Documents
+### 5. Ingest Documents
 
 Run the ingestion script to process and index your documents:
 
@@ -119,14 +136,14 @@ python scripts/ingest_documents.py --markdown-separator
 ```
 
 This will:
-- Load all documents from `data/curated_data/`
+- Load all documents from `data/` directory (recursively processes all subdirectories)
 - Chunk them into manageable pieces:
   - **Default**: Character-based chunking with overlap (all file types)
   - **With `--markdown-separator`**: Split markdown files by `##` headers, other files use default chunking
 - Generate embeddings using sentence-transformers
 - Store them in ChromaDB
 
-### 5. Start the API Server
+### 6. Start the API Server
 
 ```bash
 # Make sure virtual environment is activated first
