@@ -30,7 +30,8 @@ backend/
 ├── chroma_db/              # Vector database storage
 ├── venv/                   # Virtual environment (not in git)
 ├── requirements.txt        # Python dependencies
-├── setup_venv.ps1          # Virtual environment setup script
+├── setup_venv.ps1          # Virtual environment setup script - powershell
+├── setup_venv.sh           # Virtual environment setup script - bash
 ├── .env                    # Environment variables (not in git)
 └── .env.example            # Environment template
 ```
