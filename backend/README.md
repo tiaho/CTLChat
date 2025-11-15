@@ -25,7 +25,8 @@ backend/
 │   └── ingest_documents.py # Document ingestion script
 ├── data/
 │   ├── curated_data/       # Place your documents here
-│   └── program_logs/       # Application logs
+│   └── program_logs/       # Logs from previous programs
+├── logs/                   # Application logs (not in git)
 ├── chroma_db/              # Vector database storage
 ├── venv/                   # Virtual environment (not in git)
 ├── requirements.txt        # Python dependencies
@@ -261,7 +262,7 @@ Edit `rag_engine.py` to modify:
 **No documents loaded:**
 - Check that documents are in `data/curated_data/`
 - Verify file formats are supported
-- Check logs in `data/program_logs/`
+- Check application logs in `logs/` directory
 
 **API key errors:**
 - Ensure `ANTHROPIC_API_KEY` is set in `.env`

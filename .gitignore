@@ -15,3 +15,8 @@ backend/env/
 .Python
 *.pyc
 __pycache__/
+
+# Logs
+logs/
+backend/logs/
+*.log
